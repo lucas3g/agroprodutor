@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"\\\\mateus\\\\C\\\\wamp\\\\www\\\\agroprodutor\")",
+      "Bash(dir \"\\\\mateus\\\\C\\\\wamp\\\\www\\\\agroprodutor\\\\storage\")"
+    ]
+  }
+}

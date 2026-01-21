@@ -1,0 +1,54 @@
+<?php
+
+namespace Agroprodutor\Controllers;
+
+use Agroprodutor\Services\JsonStorageService;
+use Agroprodutor\Helpers\RequestHelper;
+use Agroprodutor\Helpers\ResponseHelper;
+
+class AgroProdutorController
+{
+    public static function setJson(string $apelido, string $moduleName, string $campoChave = 'CLIFOR'): void
+    {
+        $registros = RequestHelper::getJsonInput();
+
+        $arquivosCriados = JsonStorageService::setJson($apelido, $moduleName, $registros, $campoChave);
+
+        ResponseHelper::text((string) $arquivosCriados);
+    }
+
+    public static function getJson(string $apelido, string $moduleName, string $jsonName = ''): void
+    {
+        $result = JsonStorageService::getJson($apelido, $moduleName, $jsonName);
+
+        ResponseHelper::json($result);
+    }
+
+    public static function register(string $apelido, string $moduleName): void
+    {
+        $registro = RequestHelper::getJsonInput();
+
+        $success = JsonStorageService::register($apelido, $moduleName, $registro);
+
+        ResponseHelper::json(['SUCCESS' => $success]);
+    }
+
+    public static function validateCredentials(string $apelido, string $moduleName): void
+    {
+        $credenciais = RequestHelper::getJsonInput();
+
+        if (!isset($credenciais['CNPJCPF']) || !isset($credenciais['PASSWORD'])) {
+            ResponseHelper::json(['VALID' => false]);
+            return;
+        }
+
+        $valid = JsonStorageService::validateCredentials(
+            $apelido,
+            $moduleName,
+            $credenciais['CNPJCPF'],
+            $credenciais['PASSWORD']
+        );
+
+        ResponseHelper::json(['VALID' => $valid]);
+    }
+}

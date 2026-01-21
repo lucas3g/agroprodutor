@@ -1,0 +1,32 @@
+<?php
+
+namespace Agroprodutor\Controllers;
+
+use Agroprodutor\Services\DanfeService;
+use Agroprodutor\Helpers\RequestHelper;
+use Agroprodutor\Helpers\ResponseHelper;
+
+class DanfeController
+{
+    public static function gerarPdfs(string $apelido, string $moduleName): void
+    {
+        $registros = RequestHelper::getJsonInput();
+
+        $result = DanfeService::gerarPdfs($apelido, $moduleName, $registros);
+
+        ResponseHelper::json($result);
+    }
+
+    public static function downloadPdf(string $apelido, string $moduleName, string $clienteId): void
+    {
+        $pdfPath = __DIR__ . "/../../storage/pdf/{$apelido}/{$moduleName}/{$clienteId}.pdf";
+
+        if (!file_exists($pdfPath)) {
+            ResponseHelper::notFound('PDF não encontrado');
+            return;
+        }
+
+        $content = file_get_contents($pdfPath);
+        ResponseHelper::pdfDownload($content, "{$clienteId}.pdf");
+    }
+}
